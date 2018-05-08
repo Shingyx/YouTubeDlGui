@@ -13,7 +13,7 @@ apply plugin: 'java'
 apply plugin: 'kotlin'
 apply plugin: 'application'
 
-mainClassName = 'com.github.shingyx.youtubedlgui.MainKt'
+mainClassName = 'com.github.shingyx.youtubedlgui.MainApplicationKt'
 
 sourceCompatibility = 1.8
 

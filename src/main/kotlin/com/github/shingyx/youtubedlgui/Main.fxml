@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+      prefHeight="170.0" prefWidth="360.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.github.shingyx.youtubedlgui.MainController">
+    <padding>
+        <Insets left="20.0" right="20.0"/>
+    </padding>
+    <HBox alignment="CENTER">
+        <VBox.margin>
+            <Insets bottom="10.0"/>
+        </VBox.margin>
+        <Label text="URL:">
+            <HBox.margin>
+                <Insets right="10.0"/>
+            </HBox.margin>
+        </Label>
+        <TextField fx:id="urlField" maxWidth="300.0" prefWidth="250.0">
+            <opaqueInsets>
+                <Insets/>
+            </opaqueInsets>
+            <HBox.margin>
+                <Insets/>
+            </HBox.margin>
+        </TextField>
+    </HBox>
+    <Button defaultButton="true" mnemonicParsing="false" onAction="#start" text="Start"/>
+    <opaqueInsets>
+        <Insets/>
+    </opaqueInsets>
+</VBox>
