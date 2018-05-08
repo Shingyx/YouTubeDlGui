@@ -31,7 +31,7 @@
             </HBox.margin>
         </TextField>
     </HBox>
-    <Button defaultButton="true" mnemonicParsing="false" onAction="#start" text="Start"/>
+    <Button fx:id="startDownloadButton" defaultButton="true" mnemonicParsing="false" onAction="#startDownload" text="Start"/>
     <opaqueInsets>
         <Insets/>
     </opaqueInsets>

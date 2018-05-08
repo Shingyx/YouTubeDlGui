@@ -1,6 +1,9 @@
 package com.github.shingyx.youtubedlgui
 
+import javafx.application.Platform
+import javafx.concurrent.Task
 import javafx.fxml.FXML
+import javafx.scene.control.Button
 import javafx.scene.control.TextField
 import java.net.MalformedURLException
 import java.net.URL
@@ -9,6 +12,9 @@ import java.nio.file.Paths
 class MainController {
     @FXML
     private lateinit var urlField: TextField
+    @FXML
+    private lateinit var startDownloadButton: Button
+
     private val settings: Settings = Settings()
 
     init {
@@ -18,7 +24,7 @@ class MainController {
     }
 
     @FXML
-    private fun start() {
+    private fun startDownload() {
         val url = urlField.text.trim()
         try {
             URL(url)
@@ -27,9 +33,10 @@ class MainController {
             return
         }
 
-        val format = "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]"
+        startDownloadButton.isDisable = true
 
-        val process = ProcessBuilder(
+        val format = "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]"
+        val processBuilder = ProcessBuilder(
                 "\"${settings.youtubeDlPath}\"",
                 "--ffmpeg-location",
                 "\"${settings.ffmpegPath}\"",
@@ -39,14 +46,24 @@ class MainController {
                 "\"$format\"",
                 "--newline",
                 url
-        ).start()
+        )
+        processBuilder.redirectErrorStream(true)
 
-        process.inputStream.use { stream ->
-            stream.bufferedReader().use { reader ->
-                reader.forEachLine { line ->
-                    println(line)
+        val task = object : Task<Unit>() {
+            override fun call() {
+                val process = processBuilder.start()
+                process.inputStream.use { stream ->
+                    stream.bufferedReader().use { reader ->
+                        reader.forEachLine { line ->
+                            println(line)
+                        }
+                    }
+                }
+                Platform.runLater {
+                    startDownloadButton.isDisable = false
                 }
             }
         }
+        Thread(task).start()
     }
 }
