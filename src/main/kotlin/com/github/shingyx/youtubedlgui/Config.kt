@@ -49,6 +49,22 @@ object Config {
         }
     }
 
+    fun configIsValid(): Boolean {
+        val youtubeDlPathFile = File(youtubeDlPath)
+        if (!youtubeDlPathFile.isFile || youtubeDlPathFile.name != "youtube-dl.exe") {
+            return false
+        }
+        val ffmpegPathFile = File(ffmpegPath)
+        if (!ffmpegPathFile.isFile || ffmpegPathFile.name != "ffmpeg.exe") {
+            return false
+        }
+        val outputDirFile = File(outputDir)
+        if (!outputDirFile.isDirectory) {
+            return false
+        }
+        return true
+    }
+
     override fun toString(): String {
         return "Config(youtubeDlPath=$youtubeDlPath,ffmpegPath=$ffmpegPath,outputDir=$outputDir)"
     }

@@ -104,8 +104,7 @@ class ConfigController {
             val alert = Alert(Alert.AlertType.ERROR)
             alert.headerText = "Invalid configuration"
             alert.contentText = errors.joinToString("\n")
-            alert.showAndWait()
-            return
+            return alert.show()
         }
         Config.youtubeDlPath = youtubeDlPath
         Config.ffmpegPath = ffmpegPath

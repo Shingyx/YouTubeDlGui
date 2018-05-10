@@ -41,6 +41,13 @@ class MainController {
 
     @FXML
     private fun startDownload() {
+        if (!Config.configIsValid()) {
+            val alert = Alert(Alert.AlertType.INFORMATION)
+            alert.headerText = null
+            alert.contentText = "Invalid configuration - press OK to configure paths"
+            alert.showAndWait()
+            return openConfiguration()
+        }
         val input = urlField.text.trim()
         if (input.isEmpty()) {
             return showError("YouTube URL cannot be blank")
@@ -90,6 +97,6 @@ class MainController {
         val alert = Alert(Alert.AlertType.ERROR)
         alert.headerText = null
         alert.contentText = message
-        alert.showAndWait()
+        alert.show()
     }
 }
