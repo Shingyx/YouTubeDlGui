@@ -6,33 +6,22 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-      prefHeight="170.0" prefWidth="360.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.github.shingyx.youtubedlgui.MainController">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.shingyx.youtubedlgui.MainController">
     <padding>
-        <Insets left="20.0" right="20.0"/>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
     </padding>
-    <HBox alignment="CENTER">
-        <VBox.margin>
-            <Insets bottom="10.0"/>
-        </VBox.margin>
-        <Label text="URL:">
-            <HBox.margin>
-                <Insets right="10.0"/>
-            </HBox.margin>
-        </Label>
-        <TextField fx:id="urlField" maxWidth="300.0" prefWidth="250.0">
-            <opaqueInsets>
-                <Insets/>
-            </opaqueInsets>
-            <HBox.margin>
-                <Insets/>
-            </HBox.margin>
-        </TextField>
+    <HBox alignment="CENTER_RIGHT">
+        <Button mnemonicParsing="false" onAction="#openConfiguration" text="Configure">
+           <font>
+               <Font size="10.0"/>
+           </font>
+        </Button>
     </HBox>
-    <Button fx:id="startDownloadButton" defaultButton="true" mnemonicParsing="false" onAction="#startDownload" text="Start"/>
-    <opaqueInsets>
-        <Insets/>
-    </opaqueInsets>
+    <HBox alignment="CENTER" spacing="10.0">
+        <Label text="Video URL:" />
+        <TextField fx:id="urlField" prefWidth="250.0" HBox.hgrow="ALWAYS" />
+    </HBox>
+    <Button fx:id="startDownloadButton" defaultButton="true" mnemonicParsing="false" onAction="#startDownload" text="Start" />
 </VBox>

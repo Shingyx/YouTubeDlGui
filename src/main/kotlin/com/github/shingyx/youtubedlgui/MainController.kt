@@ -3,8 +3,15 @@ package com.github.shingyx.youtubedlgui
 import javafx.application.Platform
 import javafx.concurrent.Task
 import javafx.fxml.FXML
+import javafx.fxml.FXMLLoader
+import javafx.scene.Parent
+import javafx.scene.Scene
+import javafx.scene.control.Alert
 import javafx.scene.control.Button
 import javafx.scene.control.TextField
+import javafx.stage.Modality
+import javafx.stage.Stage
+import org.apache.commons.httpclient.util.URIUtil
 import java.net.MalformedURLException
 import java.net.URL
 import java.nio.file.Paths
@@ -15,33 +22,44 @@ class MainController {
     @FXML
     private lateinit var startDownloadButton: Button
 
-    private val settings: Settings = Settings()
-
     init {
         println("Current relative path is: ${Paths.get("").toAbsolutePath()}")
-        settings.load()
-        println(settings)
+        Config.load()
+        println(Config)
+    }
+
+    @FXML
+    private fun openConfiguration() {
+        val stage = Stage()
+        val root = FXMLLoader.load<Parent>(javaClass.getResource("Config.fxml"))
+        stage.title = "Configure paths"
+        stage.scene = Scene(root)
+        stage.initModality(Modality.APPLICATION_MODAL)
+        stage.show()
     }
 
     @FXML
     private fun startDownload() {
-        val url = urlField.text.trim()
-        try {
-            URL(url)
-        } catch (e: MalformedURLException) {
-            println("$url is an invalid URL")
-            return
+        val input = urlField.text.trim()
+        if (input.isEmpty()) {
+            return showError("YouTube URL cannot be blank")
         }
+        try {
+            URL(input)
+        } catch (e: MalformedURLException) {
+            return showError("$input is not a valid YouTube URL")
+        }
+        val url = URIUtil.encodeQuery(input)
 
         startDownloadButton.isDisable = true
 
         val format = "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]"
         val processBuilder = ProcessBuilder(
-                "\"${settings.youtubeDlPath}\"",
+                "\"${Config.youtubeDlPath}\"",
                 "--ffmpeg-location",
-                "\"${settings.ffmpegPath}\"",
+                "\"${Config.ffmpegPath}\"",
                 "-o",
-                "\"${settings.outputDir}/%(title)s.%(ext)s\"",
+                "\"${Config.outputDir}/%(title)s.%(ext)s\"",
                 "-f",
                 "\"$format\"",
                 "--newline",
@@ -65,5 +83,12 @@ class MainController {
             }
         }
         Thread(task).start()
+    }
+
+    private fun showError(message: String) {
+        val alert = Alert(Alert.AlertType.ERROR)
+        alert.headerText = null
+        alert.contentText = message
+        alert.showAndWait()
     }
 }

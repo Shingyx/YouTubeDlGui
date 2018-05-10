@@ -11,7 +11,7 @@ class MainApplication : Application() {
     override fun start(primaryStage: Stage) {
         val root = FXMLLoader.load<Parent>(javaClass.getResource("Main.fxml"))
         primaryStage.title = "YouTube DL GUI"
-        primaryStage.scene = Scene(root, 360.0, 170.0)
+        primaryStage.scene = Scene(root)
         primaryStage.show()
     }
 }

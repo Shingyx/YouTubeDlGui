@@ -11,7 +11,7 @@ private const val KEY_YOUTUBE_DL_PATH = "youtubeDlPath"
 private const val KEY_FFMPEG_PATH = "ffmpegPath"
 private const val KEY_OUTPUT_DIR = "outputDir"
 
-class Settings {
+object Config {
     private val properties = Properties()
 
     var youtubeDlPath: String?
@@ -37,7 +37,7 @@ class Settings {
                 try {
                     properties.load(inputStream)
                 } catch (e: IOException) {
-                    println("File not found")
+                    println("Loading settings failed")
                 }
             }
         }
@@ -50,6 +50,6 @@ class Settings {
     }
 
     override fun toString(): String {
-        return "Settings(youtubeDlPath=$youtubeDlPath,ffmpegPath=$ffmpegPath,outputDir=$outputDir)"
+        return "Config(youtubeDlPath=$youtubeDlPath,ffmpegPath=$ffmpegPath,outputDir=$outputDir)"
     }
 }
