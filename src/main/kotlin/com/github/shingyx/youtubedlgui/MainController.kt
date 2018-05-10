@@ -4,11 +4,11 @@ import javafx.application.Platform
 import javafx.concurrent.Task
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
-import javafx.scene.Parent
 import javafx.scene.Scene
 import javafx.scene.control.Alert
 import javafx.scene.control.Button
 import javafx.scene.control.TextField
+import javafx.scene.input.Clipboard
 import javafx.stage.Modality
 import javafx.stage.Stage
 import org.apache.commons.httpclient.util.URIUtil
@@ -26,6 +26,24 @@ class MainController {
         println("Current relative path is: ${Paths.get("").toAbsolutePath()}")
         Config.load()
         println(Config)
+    }
+
+    @FXML
+    private fun initialize() {
+        urlField.focusedProperty().addListener { _, _, focused ->
+            if (focused && urlField.text.isEmpty()) {
+                val clipboardText = Clipboard.getSystemClipboard().string?.trim()
+                val validUrl = try {
+                    URL(clipboardText)
+                    true
+                } catch (e: MalformedURLException) {
+                    false
+                }
+                if (validUrl) {
+                    urlField.text = clipboardText
+                }
+            }
+        }
     }
 
     @FXML
