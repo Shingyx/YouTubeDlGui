@@ -31,10 +31,11 @@ class MainController {
     @FXML
     private fun openConfiguration() {
         val stage = Stage()
-        val root = FXMLLoader.load<Parent>(javaClass.getResource("Config.fxml"))
+        val loader = FXMLLoader(javaClass.getResource("Config.fxml"))
+        stage.scene = Scene(loader.load())
         stage.title = "Configure paths"
-        stage.scene = Scene(root)
         stage.initModality(Modality.APPLICATION_MODAL)
+        loader.getController<ConfigController>().stage = stage
         stage.show()
     }
 

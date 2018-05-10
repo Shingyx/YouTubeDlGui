@@ -3,6 +3,8 @@ package com.github.shingyx.youtubedlgui
 import javafx.fxml.FXML
 import javafx.scene.control.Alert
 import javafx.scene.control.TextField
+import javafx.stage.DirectoryChooser
+import javafx.stage.FileChooser
 import javafx.stage.Stage
 import java.io.File
 
@@ -14,6 +16,8 @@ class ConfigController {
     @FXML
     private lateinit var outputDirField: TextField
 
+    lateinit var stage: Stage
+
     @FXML
     private fun initialize() {
         youtubeDlPathField.text = Config.youtubeDlPath
@@ -23,25 +27,56 @@ class ConfigController {
 
     @FXML
     private fun youtubeDlPathBrowse() {
-        // TODO
+        val fileChooser = FileChooser()
+        fileChooser.title = "Set youtube-dl path"
+        fileChooser.extensionFilters.add(FileChooser.ExtensionFilter("youtube-dl", "youtube-dl.exe"))
+        val initialFile = File(youtubeDlPathField.text)
+        if (initialFile.isFile) {
+            fileChooser.initialDirectory = File(initialFile.parent)
+        }
+        val file = fileChooser.showOpenDialog(stage)
+        if (file != null) {
+            youtubeDlPathField.text = file.absolutePath
+        }
     }
 
     @FXML
     private fun ffmpegPathBrowse() {
+        val fileChooser = FileChooser()
+        fileChooser.title = "Set ffmpeg path"
+        fileChooser.extensionFilters.add(FileChooser.ExtensionFilter("ffmpeg", "ffmpeg.exe"))
+        val initialFile = File(ffmpegPathField.text)
+        if (initialFile.isFile) {
+            fileChooser.initialDirectory = File(initialFile.parent)
+        }
+        val file = fileChooser.showOpenDialog(stage)
+        if (file != null) {
+            ffmpegPathField.text = file.absolutePath
+        }
     }
 
     @FXML
     private fun outputDirBrowse() {
+        val directoryChooser = DirectoryChooser()
+        directoryChooser.title = "Set Output Directory"
+        val initialDirectory = File(outputDirField.text)
+        if (initialDirectory.isDirectory) {
+            directoryChooser.initialDirectory = initialDirectory
+        }
+        val directory = directoryChooser.showDialog(stage)
+        if (directory != null) {
+            outputDirField.text = directory.absolutePath
+        }
     }
 
     @FXML
     private fun save() {
-        val youtubeDlPath = youtubeDlPathField.text?.trim()
-        val ffmpegPath = ffmpegPathField.text?.trim()
-        val outputDir = outputDirField.text?.trim()
+        val youtubeDlPath = youtubeDlPathField.text.trim()
+        val ffmpegPath = ffmpegPathField.text.trim()
+        val outputDir = outputDirField.text.trim()
 
         val errors = ArrayList<String>()
-        if (youtubeDlPath.isNullOrEmpty()) {
+        if (youtubeDlPath.isEmpty()) {
             errors.add("youtube-dl path cannot be blank")
         } else {
             val youtubeDlPathFile = File(youtubeDlPath)
@@ -49,7 +84,7 @@ class ConfigController {
                 errors.add("$youtubeDlPath is not a valid youtube-dl executable")
             }
         }
-        if (ffmpegPath.isNullOrEmpty()) {
+        if (ffmpegPath.isEmpty()) {
             errors.add("ffmpeg path cannot be blank")
         } else {
             val ffmpegPathFile = File(ffmpegPath)
@@ -57,7 +92,7 @@ class ConfigController {
                 errors.add("$ffmpegPath is not a valid ffmpeg executable")
             }
         }
-        if (outputDir.isNullOrEmpty()) {
+        if (outputDir.isEmpty()) {
             errors.add("Output directory cannot be blank")
         } else {
             val outputDirFile = File(outputDir)
@@ -72,16 +107,15 @@ class ConfigController {
             alert.showAndWait()
             return
         }
-        // TODO save then closeWindow()
+        Config.youtubeDlPath = youtubeDlPath
+        Config.ffmpegPath = ffmpegPath
+        Config.outputDir = outputDir
+        Config.save()
+        stage.close()
     }
 
     @FXML
     private fun cancel() {
-        closeWindow()
-    }
-
-    private fun closeWindow() {
-        val stage = youtubeDlPathField.scene.window as Stage
         stage.close()
     }
 }

@@ -2,16 +2,15 @@ package com.github.shingyx.youtubedlgui
 
 import javafx.application.Application
 import javafx.fxml.FXMLLoader
-import javafx.scene.Parent
 import javafx.scene.Scene
 import javafx.stage.Stage
 
 class MainApplication : Application() {
 
     override fun start(primaryStage: Stage) {
-        val root = FXMLLoader.load<Parent>(javaClass.getResource("Main.fxml"))
+        val loader = FXMLLoader(javaClass.getResource("Main.fxml"))
+        primaryStage.scene = Scene(loader.load())
         primaryStage.title = "YouTube DL GUI"
-        primaryStage.scene = Scene(root)
         primaryStage.show()
     }
 }

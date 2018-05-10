@@ -14,18 +14,18 @@ private const val KEY_OUTPUT_DIR = "outputDir"
 object Config {
     private val properties = Properties()
 
-    var youtubeDlPath: String?
-        get() = properties.getProperty(KEY_YOUTUBE_DL_PATH)
+    var youtubeDlPath: String
+        get() = properties.getProperty(KEY_YOUTUBE_DL_PATH) ?: ""
         set(value) {
             properties.setProperty(KEY_YOUTUBE_DL_PATH, value)
         }
-    var ffmpegPath: String?
-        get() = properties.getProperty(KEY_FFMPEG_PATH)
+    var ffmpegPath: String
+        get() = properties.getProperty(KEY_FFMPEG_PATH) ?: ""
         set(value) {
             properties.setProperty(KEY_FFMPEG_PATH, value)
         }
-    var outputDir: String?
-        get() = properties.getProperty(KEY_OUTPUT_DIR)
+    var outputDir: String
+        get() = properties.getProperty(KEY_OUTPUT_DIR) ?: ""
         set(value) {
             properties.setProperty(KEY_OUTPUT_DIR, value)
         }
