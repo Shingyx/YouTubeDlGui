@@ -48,15 +48,17 @@ class MainController {
         table = TableView()
         table.columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY
 
-        val titleColumn = TableColumn<DownloadTask, String>("ID")
+        val titleColumn = TableColumn<DownloadTask, String>("Video")
         titleColumn.cellValueFactory = PropertyValueFactory<DownloadTask, String>("title")
         val progressColumn = TableColumn<DownloadTask, Double>("Progress")
         progressColumn.cellValueFactory = PropertyValueFactory<DownloadTask, Double>("progress")
         progressColumn.cellFactory = ProgressBarTableCell.forTableColumn()
-        table.columns.addAll(titleColumn, progressColumn)
+        val statusColumn = TableColumn<DownloadTask, String>("Status")
+        statusColumn.cellValueFactory = PropertyValueFactory<DownloadTask, String>("message")
+        table.columns.addAll(titleColumn, progressColumn, statusColumn)
         container.children.add(table)
 
-        executorService = Executors.newFixedThreadPool(8, { runnable -> Thread(runnable) })
+        executorService = Executors.newFixedThreadPool(8)
     }
 
     @FXML
@@ -90,5 +92,9 @@ class MainController {
         val task = DownloadTask(url)
         table.items.add(task)
         executorService.execute(task)
+    }
+
+    fun cleanup() {
+        executorService.shutdown()
     }
 }
