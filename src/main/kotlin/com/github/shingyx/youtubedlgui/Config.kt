@@ -3,7 +3,6 @@ package com.github.shingyx.youtubedlgui
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
-import java.io.IOException
 import java.util.*
 
 private const val SETTINGS_PATH = "config.properties"
@@ -33,12 +32,8 @@ object Config {
     fun load() {
         val file = File(SETTINGS_PATH)
         if (file.isFile) {
-            FileInputStream(SETTINGS_PATH).use { inputStream ->
-                try {
-                    properties.load(inputStream)
-                } catch (e: IOException) {
-                    println("Loading settings failed")
-                }
+            FileInputStream(file).use { inputStream ->
+                properties.load(inputStream)
             }
         }
     }

@@ -12,9 +12,9 @@ import javafx.scene.input.Clipboard
 import javafx.stage.Modality
 import javafx.stage.Stage
 import org.apache.commons.httpclient.util.URIUtil
+import java.io.IOException
 import java.net.MalformedURLException
 import java.net.URL
-import java.nio.file.Paths
 
 class MainController {
     @FXML
@@ -23,9 +23,11 @@ class MainController {
     private lateinit var startDownloadButton: Button
 
     init {
-        println("Current relative path is: ${Paths.get("").toAbsolutePath()}")
-        Config.load()
-        println(Config)
+        try {
+            Config.load()
+        } catch (e: IOException) {
+            showError("Loading config failed")
+        }
     }
 
     @FXML
@@ -109,12 +111,5 @@ class MainController {
             }
         }
         Thread(task).start()
-    }
-
-    private fun showError(message: String) {
-        val alert = Alert(Alert.AlertType.ERROR)
-        alert.headerText = null
-        alert.contentText = message
-        alert.show()
     }
 }

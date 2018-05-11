@@ -7,6 +7,7 @@ import javafx.stage.DirectoryChooser
 import javafx.stage.FileChooser
 import javafx.stage.Stage
 import java.io.File
+import java.io.IOException
 
 class ConfigController {
     @FXML
@@ -109,7 +110,11 @@ class ConfigController {
         Config.youtubeDlPath = youtubeDlPath
         Config.ffmpegPath = ffmpegPath
         Config.outputDir = outputDir
-        Config.save()
+        try {
+            Config.save()
+        } catch (e: IOException) {
+            return showError("Saving config failed")
+        }
         stage.close()
     }
 
