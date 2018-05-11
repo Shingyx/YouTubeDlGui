@@ -1,14 +1,20 @@
 package com.github.shingyx.youtubedlgui.lib
 
+import javafx.application.Platform
+import javafx.beans.property.SimpleStringProperty
 import javafx.concurrent.Task
 import java.io.IOException
 import java.lang.IllegalArgumentException
 import java.net.URL
 import java.net.URLDecoder
+import javafx.beans.property.ReadOnlyStringProperty
 
 class DownloadTask(private val url: String) : Task<Unit>() {
     private val processBuilder: ProcessBuilder
     private var videoId: String? = null
+
+    private val speed = SimpleStringProperty(this, "speed", "-")
+    private val eta = SimpleStringProperty(this, "eta", "-")
 
     init {
         val format = "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]"
@@ -51,6 +57,8 @@ class DownloadTask(private val url: String) : Task<Unit>() {
             }
             updateProgress(100, 100)
             updateMessage(completeMessage)
+            updateSpeed("-")
+            updateEta("-")
         }
     }
 
@@ -86,11 +94,31 @@ class DownloadTask(private val url: String) : Task<Unit>() {
                         percentage = 99.9
                     }
                     updateProgress(percentage, 100.0)
+                    if (line.contains("ETA") && !line.contains("Unknown")) {
+                        updateSpeed(parts[5])
+                        updateEta(parts[7])
+                    }
                 }
             }
             "ERROR:" -> {
                 throw IllegalArgumentException(line.substringAfter("ERROR:").trim())
             }
         }
+    }
+
+    fun speedProperty(): ReadOnlyStringProperty {
+        return speed
+    }
+
+    private fun updateSpeed(speed: String) {
+        Platform.runLater({ this.speed.set(speed) })
+    }
+
+    fun etaProperty(): ReadOnlyStringProperty {
+        return eta
+    }
+
+    private fun updateEta(eta: String) {
+        Platform.runLater({ this.eta.set(eta) })
     }
 }

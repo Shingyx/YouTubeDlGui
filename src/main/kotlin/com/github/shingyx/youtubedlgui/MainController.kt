@@ -4,6 +4,7 @@ import com.github.shingyx.youtubedlgui.lib.Config
 import com.github.shingyx.youtubedlgui.lib.DownloadTask
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
+import javafx.geometry.Pos
 import javafx.scene.Scene
 import javafx.scene.control.*
 import javafx.scene.control.cell.ProgressBarTableCell
@@ -48,6 +49,14 @@ class MainController {
         table = TableView()
         table.columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY
 
+        class TableCellFormat : TableCell<DownloadTask, String>() {
+            override fun updateItem(item: String?, empty: Boolean) {
+                super.updateItem(item, empty)
+                text = item
+                alignment = Pos.CENTER_RIGHT
+            }
+        }
+
         val titleColumn = TableColumn<DownloadTask, String>("Video")
         titleColumn.cellValueFactory = PropertyValueFactory<DownloadTask, String>("title")
         val progressColumn = TableColumn<DownloadTask, Double>("Progress")
@@ -55,7 +64,13 @@ class MainController {
         progressColumn.cellFactory = ProgressBarTableCell.forTableColumn()
         val statusColumn = TableColumn<DownloadTask, String>("Status")
         statusColumn.cellValueFactory = PropertyValueFactory<DownloadTask, String>("message")
-        table.columns.addAll(titleColumn, progressColumn, statusColumn)
+        val speedColumn = TableColumn<DownloadTask, String>("Speed")
+        speedColumn.cellValueFactory = PropertyValueFactory<DownloadTask, String>("speed")
+        speedColumn.setCellFactory { TableCellFormat() }
+        val etaColumn = TableColumn<DownloadTask, String>("ETA")
+        etaColumn.cellValueFactory = PropertyValueFactory<DownloadTask, String>("eta")
+        etaColumn.setCellFactory { TableCellFormat() }
+        table.columns.addAll(titleColumn, progressColumn, statusColumn, speedColumn, etaColumn)
         container.children.add(table)
 
         executorService = Executors.newFixedThreadPool(8)
@@ -95,6 +110,7 @@ class MainController {
     }
 
     fun cleanup() {
-        executorService.shutdown()
+        table.items.forEach { it.cancel() }
+        executorService.shutdownNow()
     }
 }
