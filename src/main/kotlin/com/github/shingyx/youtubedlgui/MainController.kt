@@ -24,6 +24,7 @@ class MainController {
     @FXML
     private lateinit var urlField: TextField
 
+    private val tasks = HashMap<String, DownloadTask>()
     private lateinit var table: TableView<DownloadTask>
     private lateinit var executorService: ExecutorService
 
@@ -103,14 +104,21 @@ class MainController {
             return showError("$input is not a valid YouTube URL")
         }
         val url = URIUtil.encodeQuery(input)
+        if (tasks.containsKey(url)) {
+            return showError("Already downloading $url")
+        }
 
         val task = DownloadTask(url)
+        tasks[url] = task
+        task.setOnSucceeded { tasks.remove(url) }
+        task.setOnCancelled { tasks.remove(url) }
+        task.setOnFailed { tasks.remove(url) }
         table.items.add(task)
         executorService.execute(task)
     }
 
     fun cleanup() {
-        table.items.forEach { it.cancel() }
+        tasks.forEach { _, value -> value.cancel() }
         executorService.shutdownNow()
     }
 }
