@@ -1,4 +1,4 @@
-package com.github.shingyx.youtubedlgui
+package com.github.shingyx.youtubedlgui.lib
 
 import java.io.File
 import java.io.FileInputStream

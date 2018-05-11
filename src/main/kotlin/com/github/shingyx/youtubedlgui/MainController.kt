@@ -1,26 +1,30 @@
 package com.github.shingyx.youtubedlgui
 
-import javafx.application.Platform
-import javafx.concurrent.Task
+import com.github.shingyx.youtubedlgui.lib.Config
+import com.github.shingyx.youtubedlgui.lib.DownloadTask
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.scene.Scene
-import javafx.scene.control.Alert
-import javafx.scene.control.Button
-import javafx.scene.control.TextField
+import javafx.scene.control.*
+import javafx.scene.control.cell.ProgressBarTableCell
+import javafx.scene.control.cell.PropertyValueFactory
 import javafx.scene.input.Clipboard
+import javafx.scene.layout.VBox
 import javafx.stage.Modality
 import javafx.stage.Stage
 import org.apache.commons.httpclient.util.URIUtil
 import java.io.IOException
-import java.net.MalformedURLException
-import java.net.URL
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 class MainController {
     @FXML
-    private lateinit var urlField: TextField
+    private lateinit var container: VBox
     @FXML
-    private lateinit var startDownloadButton: Button
+    private lateinit var urlField: TextField
+
+    private lateinit var table: TableView<DownloadTask>
+    private lateinit var executorService: ExecutorService
 
     init {
         try {
@@ -35,17 +39,24 @@ class MainController {
         urlField.focusedProperty().addListener { _, _, focused ->
             if (focused && urlField.text.isEmpty()) {
                 val clipboardText = Clipboard.getSystemClipboard().string?.trim()
-                val validUrl = try {
-                    URL(clipboardText)
-                    true
-                } catch (e: MalformedURLException) {
-                    false
-                }
-                if (validUrl) {
+                if (isValidUrl(clipboardText)) {
                     urlField.text = clipboardText
                 }
             }
         }
+
+        table = TableView()
+        table.columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY
+
+        val titleColumn = TableColumn<DownloadTask, String>("ID")
+        titleColumn.cellValueFactory = PropertyValueFactory<DownloadTask, String>("title")
+        val progressColumn = TableColumn<DownloadTask, Double>("Progress")
+        progressColumn.cellValueFactory = PropertyValueFactory<DownloadTask, Double>("progress")
+        progressColumn.cellFactory = ProgressBarTableCell.forTableColumn()
+        table.columns.addAll(titleColumn, progressColumn)
+        container.children.add(table)
+
+        executorService = Executors.newFixedThreadPool(8, { runnable -> Thread(runnable) })
     }
 
     @FXML
@@ -71,45 +82,13 @@ class MainController {
         val input = urlField.text.trim()
         if (input.isEmpty()) {
             return showError("YouTube URL cannot be blank")
-        }
-        try {
-            URL(input)
-        } catch (e: MalformedURLException) {
+        } else if (!isValidUrl(input)) {
             return showError("$input is not a valid YouTube URL")
         }
         val url = URIUtil.encodeQuery(input)
 
-        startDownloadButton.isDisable = true
-
-        val format = "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]"
-        val processBuilder = ProcessBuilder(
-                "\"${Config.youtubeDlPath}\"",
-                "--ffmpeg-location",
-                "\"${Config.ffmpegPath}\"",
-                "-o",
-                "\"${Config.outputDir}/%(title)s.%(ext)s\"",
-                "-f",
-                "\"$format\"",
-                "--newline",
-                url
-        )
-        processBuilder.redirectErrorStream(true)
-
-        val task = object : Task<Unit>() {
-            override fun call() {
-                val process = processBuilder.start()
-                process.inputStream.use { stream ->
-                    stream.bufferedReader().use { reader ->
-                        reader.forEachLine { line ->
-                            println(line)
-                        }
-                    }
-                }
-                Platform.runLater {
-                    startDownloadButton.isDisable = false
-                }
-            }
-        }
-        Thread(task).start()
+        val task = DownloadTask(url)
+        table.items.add(task)
+        executorService.execute(task)
     }
 }

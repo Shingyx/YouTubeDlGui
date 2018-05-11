@@ -1,5 +1,6 @@
 package com.github.shingyx.youtubedlgui
 
+import com.github.shingyx.youtubedlgui.lib.Config
 import javafx.fxml.FXML
 import javafx.scene.control.Alert
 import javafx.scene.control.TextField

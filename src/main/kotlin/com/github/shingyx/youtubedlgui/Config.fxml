@@ -10,33 +10,40 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox spacing="10.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.shingyx.youtubedlgui.ConfigController">
+<VBox alignment="CENTER" spacing="10.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.github.shingyx.youtubedlgui.ConfigController">
     <padding>
-        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
     </padding>
     <GridPane alignment="CENTER" hgap="10.0" vgap="10.0">
         <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" />
-            <ColumnConstraints hgrow="SOMETIMES" />
-            <ColumnConstraints hgrow="SOMETIMES" />
+            <ColumnConstraints hgrow="SOMETIMES"/>
+            <ColumnConstraints hgrow="SOMETIMES"/>
+            <ColumnConstraints hgrow="SOMETIMES"/>
         </columnConstraints>
         <rowConstraints>
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
         </rowConstraints>
-        <Label text="youtube-dl" />
-        <TextField fx:id="youtubeDlPathField" editable="false" prefWidth="300.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
-        <Button mnemonicParsing="false" onAction="#youtubeDlPathBrowse" text="Browse..." GridPane.columnIndex="2" />
-        <Label text="ffmpeg" GridPane.rowIndex="1" />
-        <TextField fx:id="ffmpegPathField" editable="false" layoutX="48.0" layoutY="13.0" prefWidth="300.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-        <Button layoutX="630.0" layoutY="13.0" mnemonicParsing="false" onAction="#ffmpegPathBrowse" text="Browse..." GridPane.columnIndex="2" GridPane.rowIndex="1" />
-        <Label layoutX="10.0" layoutY="57.0" text="Output" GridPane.rowIndex="2" />
-        <TextField fx:id="outputDirField" editable="false" layoutX="10.0" layoutY="13.0" prefWidth="300.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-        <Button layoutX="10.0" layoutY="13.0" mnemonicParsing="false" onAction="#outputDirBrowse" text="Browse..." GridPane.columnIndex="2" GridPane.rowIndex="2" />
+        <Label text="youtube-dl"/>
+        <TextField fx:id="youtubeDlPathField" editable="false" prefWidth="300.0" GridPane.columnIndex="1"
+                   GridPane.hgrow="ALWAYS"/>
+        <Button mnemonicParsing="false" onAction="#youtubeDlPathBrowse" text="Browse..." GridPane.columnIndex="2"/>
+        <Label text="ffmpeg" GridPane.rowIndex="1"/>
+        <TextField fx:id="ffmpegPathField" editable="false" layoutX="48.0" layoutY="13.0" prefWidth="300.0"
+                   GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        <Button layoutX="630.0" layoutY="13.0" mnemonicParsing="false" onAction="#ffmpegPathBrowse" text="Browse..."
+                GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+        <Label layoutX="10.0" layoutY="57.0" text="Output" GridPane.rowIndex="2"/>
+        <TextField fx:id="outputDirField" editable="false" layoutX="10.0" layoutY="13.0" prefWidth="300.0"
+                   GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+        <Button layoutX="10.0" layoutY="13.0" mnemonicParsing="false" onAction="#outputDirBrowse" text="Browse..."
+                GridPane.columnIndex="2" GridPane.rowIndex="2"/>
     </GridPane>
     <HBox alignment="CENTER_RIGHT" spacing="10.0">
-        <Button defaultButton="true" mnemonicParsing="false" onAction="#save" text="Save" />
-        <Button cancelButton="true" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#cancel" text="Cancel" />
+        <Button defaultButton="true" mnemonicParsing="false" onAction="#save" text="Save"/>
+        <Button cancelButton="true" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#cancel"
+                text="Cancel"/>
     </HBox>
 </VBox>
