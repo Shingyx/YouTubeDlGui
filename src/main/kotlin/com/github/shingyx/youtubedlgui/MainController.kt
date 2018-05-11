@@ -15,6 +15,7 @@ import javafx.stage.Modality
 import javafx.stage.Stage
 import org.apache.commons.httpclient.util.URIUtil
 import java.io.IOException
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -24,7 +25,7 @@ class MainController {
     @FXML
     private lateinit var urlField: TextField
 
-    private val tasks = HashMap<String, DownloadTask>()
+    private val tasks = ConcurrentHashMap<String, DownloadTask>()
     private lateinit var table: TableView<DownloadTask>
     private lateinit var executorService: ExecutorService
 
