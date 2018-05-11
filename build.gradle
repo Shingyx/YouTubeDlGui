@@ -33,3 +33,12 @@ compileKotlin {
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
+
+sourceSets {
+    main {
+        resources {
+            srcDirs = ["src/main/kotlin"]
+            includes = ["**/*.fxml"]
+        }
+    }
+}
