@@ -106,6 +106,7 @@ class DownloadTask(private val url: String) : Task<Unit>() {
         }
     }
 
+    @Suppress("unused")
     fun speedProperty(): ReadOnlyStringProperty {
         return speed
     }
@@ -114,6 +115,7 @@ class DownloadTask(private val url: String) : Task<Unit>() {
         Platform.runLater({ this.speed.set(speed) })
     }
 
+    @Suppress("unused")
     fun etaProperty(): ReadOnlyStringProperty {
         return eta
     }
