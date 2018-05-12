@@ -9,7 +9,7 @@ import javafx.stage.Stage
 class MainApplication : Application() {
 
     override fun start(primaryStage: Stage) {
-        val loader = FXMLLoader(javaClass.getResource("Main.fxml"))
+        val loader = FXMLLoader(javaClass.getResource("/Main.fxml"))
         primaryStage.scene = Scene(loader.load())
         primaryStage.title = "YouTube DL GUI"
         val controller = loader.getController<MainController>()

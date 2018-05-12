@@ -33,15 +33,6 @@ compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
 
-sourceSets {
-    main {
-        resources {
-            srcDirs = ["src/main/kotlin"]
-            includes = ["**/*.fxml"]
-        }
-    }
-}
-
 jar {
     manifest {
         attributes 'Main-Class': 'com.github.shingyx.youtubedlgui.MainApplicationKt'

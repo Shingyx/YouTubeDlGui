@@ -81,7 +81,7 @@ class MainController {
     @FXML
     private fun openConfiguration() {
         val stage = Stage()
-        val loader = FXMLLoader(javaClass.getResource("Config.fxml"))
+        val loader = FXMLLoader(javaClass.getResource("/Config.fxml"))
         stage.scene = Scene(loader.load())
         stage.title = "Configure paths"
         stage.initModality(Modality.APPLICATION_MODAL)
