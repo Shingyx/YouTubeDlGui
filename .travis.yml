@@ -3,7 +3,7 @@ jdk: oraclejdk8
 
 before_install: chmod +x gradlew
 
-script: ./gradlew clean build shadowJar
+script: ./gradlew build shadowJar
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
