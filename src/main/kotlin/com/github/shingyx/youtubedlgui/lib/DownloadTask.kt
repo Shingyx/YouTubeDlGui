@@ -41,8 +41,9 @@ class DownloadTask(private val url: String) : Task<Unit>() {
             try {
                 var line = it.readLine()
                 while (line != null && !isCancelled) {
+                    line = line.trim()
                     processLine(line)
-                    if (line.endsWith("has already been downloaded and merged")) {
+                    if (line.matches(".+has already been downloaded( and merged)?".toRegex())) {
                         completeMessage = "Already downloaded"
                     }
                     line = it.readLine()
@@ -88,11 +89,7 @@ class DownloadTask(private val url: String) : Task<Unit>() {
             "[download]" -> {
                 updateMessage("Downloading")
                 if (parts[1].endsWith("%")) {
-                    var percentage = parts[1].dropLast(1).toDouble()
-                    if (percentage == 100.0 && parts[1].contains(".")) {
-                        // It will say exactly "100%" when it's done
-                        percentage = 99.9
-                    }
+                    val percentage = Math.min(99.9, parts[1].dropLast(1).toDouble())
                     updateProgress(percentage, 100.0)
                     if (line.contains("ETA") && !line.contains("Unknown")) {
                         updateSpeed(parts[5])
