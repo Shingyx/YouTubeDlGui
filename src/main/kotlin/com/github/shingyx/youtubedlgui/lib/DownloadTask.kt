@@ -4,7 +4,6 @@ import javafx.application.Platform
 import javafx.beans.property.SimpleStringProperty
 import javafx.concurrent.Task
 import java.io.IOException
-import java.lang.IllegalArgumentException
 import java.net.URL
 import java.net.URLDecoder
 import javafx.beans.property.ReadOnlyStringProperty
@@ -35,36 +34,27 @@ class DownloadTask(private val url: String) : Task<Unit>() {
     override fun call() {
         updateMessage("Initializing")
         val process = processBuilder.start()
-        process.inputStream.bufferedReader().use {
-            updateTitle(url)
-            var completeMessage = "Complete"
-            try {
-                var line = it.readLine()
-                while (line != null && !isCancelled) {
-                    line = line.trim()
-                    processLine(line)
-                    if (line.matches(".+has already been downloaded( and merged)?".toRegex())) {
-                        completeMessage = "Already downloaded"
-                    }
-                    line = it.readLine()
-                }
-            } catch (e: Exception) {
-                completeMessage = "Error: ${e.message}"
-            }
+        updateTitle(url)
+        var completeMessage = "Complete"
 
+        process.inputStream.bufferedReader().forEachLine {
             if (isCancelled) {
                 completeMessage = "Cancelled"
                 process.destroy()
+                return@forEachLine
             }
-            updateProgress(100, 100)
-            updateMessage(completeMessage)
-            updateSpeed("-")
-            updateEta("-")
+            completeMessage = processLine(it.trim()) ?: completeMessage
         }
+
+        updateProgress(100, 100)
+        updateMessage(completeMessage)
+        updateSpeed("-")
+        updateEta("-")
     }
 
-    private fun processLine(line: String) {
+    private fun processLine(line: String): String? {
         println(line)
+        var completeMessage: String? = null
         val parts = line.split("\\s+".toRegex())
         when (parts[0]) {
             "[youtube]" -> {
@@ -95,12 +85,16 @@ class DownloadTask(private val url: String) : Task<Unit>() {
                         updateSpeed(parts[5])
                         updateEta(parts[7])
                     }
+                } else if (line.matches("^.+has already been downloaded( and merged)?$".toRegex())) {
+                    completeMessage = "Already downloaded"
                 }
             }
             "ERROR:" -> {
-                throw IllegalArgumentException(line.substringAfter("ERROR:").trim())
+                val errorMessage = line.substringAfter("ERROR:").trim()
+                completeMessage = "Error: $errorMessage"
             }
         }
+        return completeMessage
     }
 
     @Suppress("unused")
