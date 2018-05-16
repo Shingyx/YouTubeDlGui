@@ -32,9 +32,10 @@ class DownloadTask(private val url: String) : Task<Unit>() {
     }
 
     override fun call() {
-        updateMessage("Initializing")
-        val process = processBuilder.start()
         updateTitle(url)
+        updateMessage("Initializing")
+
+        val process = processBuilder.start()
         var completeMessage = "Complete"
 
         process.inputStream.bufferedReader().forEachLine {
@@ -60,7 +61,7 @@ class DownloadTask(private val url: String) : Task<Unit>() {
             "[youtube]" -> {
                 if (videoId == null) {
                     videoId = parts[1].dropLast(1)
-                    // Reading the real title from the input stream doesn't always work on Windows - just request it
+                    // Reading international characters from the input stream doesn't always work on Windows - just request the title
                     Thread({
                         try {
                             val videoInfoUrl = URL("https://youtube.com/get_video_info?video_id=$videoId")
@@ -102,8 +103,8 @@ class DownloadTask(private val url: String) : Task<Unit>() {
         return speed
     }
 
-    private fun updateSpeed(speed: String) {
-        Platform.runLater({ this.speed.set(speed) })
+    private fun updateSpeed(value: String) {
+        Platform.runLater({ speed.set(value) })
     }
 
     @Suppress("unused")
@@ -111,7 +112,7 @@ class DownloadTask(private val url: String) : Task<Unit>() {
         return eta
     }
 
-    private fun updateEta(eta: String) {
-        Platform.runLater({ this.eta.set(eta) })
+    private fun updateEta(value: String) {
+        Platform.runLater({ eta.set(value) })
     }
 }
