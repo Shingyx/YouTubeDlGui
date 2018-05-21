@@ -21,9 +21,9 @@ class DownloadTask(private val url: String) : Task<Unit>() {
                 "\"${Config.youtubeDlPath}\"",
                 "--ffmpeg-location",
                 "\"${Config.ffmpegPath}\"",
-                "-o",
+                "--output",
                 "\"${Config.outputDir}/%(title)s.%(ext)s\"",
-                "-f",
+                "--format",
                 "\"$format\"",
                 "--newline",
                 url
@@ -65,7 +65,10 @@ class DownloadTask(private val url: String) : Task<Unit>() {
                     Thread({
                         try {
                             val videoInfoUrl = URL("https://youtube.com/get_video_info?video_id=$videoId")
-                            val response = videoInfoUrl.openStream().bufferedReader().use { it.readText() }
+                            val connection = videoInfoUrl.openConnection()
+                            connection.connectTimeout = 5000
+                            connection.readTimeout = 5000
+                            val response = connection.getInputStream().bufferedReader().use { it.readText() }
                             val decoded = URLDecoder.decode(response, Charsets.UTF_8.name())
                             val videoTitle = decoded.split("&").find { it.startsWith("title=") }?.substringAfter("=")
                             if (!videoTitle.isNullOrEmpty()) {
@@ -86,7 +89,7 @@ class DownloadTask(private val url: String) : Task<Unit>() {
                         updateSpeed(parts[5])
                         updateEta(parts[7])
                     }
-                } else if (line.matches("^.+has already been downloaded( and merged)?$".toRegex())) {
+                } else if (line.matches(".+has already been downloaded( and merged)?".toRegex())) {
                     completeMessage = "Already downloaded"
                 }
             }
