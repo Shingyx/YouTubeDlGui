@@ -11,6 +11,8 @@ import javafx.beans.property.ReadOnlyStringProperty
 class DownloadTask(private val url: String) : Task<Unit>() {
     private val processBuilder: ProcessBuilder
     private var videoId: String? = null
+    private var downloadState: DownloadState = DownloadState.INITIALIZING
+    private var completeMessage = "Complete"
 
     private val speed = SimpleStringProperty(this, "speed", "-")
     private val eta = SimpleStringProperty(this, "eta", "-")
@@ -25,6 +27,7 @@ class DownloadTask(private val url: String) : Task<Unit>() {
                 "\"${Config.outputDir}/%(title)s.%(ext)s\"",
                 "--format",
                 "\"$format\"",
+                "--ignore-config",
                 "--newline",
                 url
         )
@@ -36,33 +39,31 @@ class DownloadTask(private val url: String) : Task<Unit>() {
         updateMessage("Initializing")
 
         val process = processBuilder.start()
-        var completeMessage = "Complete"
-
         process.inputStream.bufferedReader().forEachLine {
             if (isCancelled) {
                 completeMessage = "Cancelled"
                 process.destroy()
                 return@forEachLine
             }
-            completeMessage = processLine(it.trim()) ?: completeMessage
+            processLine(it.trim())
         }
 
+        downloadState = DownloadState.COMPLETE
         updateProgress(100, 100)
         updateMessage(completeMessage)
         updateSpeed("-")
         updateEta("-")
     }
 
-    private fun processLine(line: String): String? {
+    private fun processLine(line: String) {
         println(line)
-        var completeMessage: String? = null
         val parts = line.split("\\s+".toRegex())
         when (parts[0]) {
             "[youtube]" -> {
                 if (videoId == null) {
                     videoId = parts[1].dropLast(1)
                     // Reading international characters from the input stream doesn't always work on Windows - just request the title
-                    Thread({
+                    Thread {
                         try {
                             val videoInfoUrl = URL("https://youtube.com/get_video_info?video_id=$videoId")
                             val connection = videoInfoUrl.openConnection()
@@ -77,14 +78,24 @@ class DownloadTask(private val url: String) : Task<Unit>() {
                         } catch (e: IOException) {
                             // it tried
                         }
-                    }).start()
+                    }.start()
                 }
             }
             "[download]" -> {
-                updateMessage("Downloading")
-                if (parts[1].endsWith("%")) {
-                    val percentage = Math.min(99.9, parts[1].dropLast(1).toDouble())
-                    updateProgress(percentage, 100.0)
+                if (parts[1] == "Destination:") {
+                    if (line.endsWith(".mp4")) {
+                        downloadState = DownloadState.DOWNLOADING_VIDEO
+                        updateMessage("Downloading video")
+                    } else if (line.endsWith(".m4a")) {
+                        downloadState = DownloadState.DOWNLOADING_AUDIO
+                        updateMessage("Downloading audio")
+                    }
+                } else if (parts[1].endsWith("%")) {
+                    var percentage = Math.min(99.9, parts[1].dropLast(1).toDouble())
+                    if (downloadState == DownloadState.DOWNLOADING_AUDIO) {
+                        percentage = 100 + percentage / 10
+                    }
+                    updateProgress(percentage, 110.0)
                     if (line.contains("ETA") && !line.contains("Unknown")) {
                         updateSpeed(parts[5])
                         updateEta(parts[7])
@@ -93,12 +104,17 @@ class DownloadTask(private val url: String) : Task<Unit>() {
                     completeMessage = "Already downloaded"
                 }
             }
+            "[ffmpeg]" -> {
+                if (parts[1] == "Merging" && parts[2] == "formats") {
+                    downloadState = DownloadState.MERGING_FORMATS
+                    updateMessage("Merging video and audio")
+                }
+            }
             "ERROR:" -> {
                 val errorMessage = line.substringAfter("ERROR:").trim()
                 completeMessage = "Error: $errorMessage"
             }
         }
-        return completeMessage
     }
 
     @Suppress("unused")
@@ -107,7 +123,7 @@ class DownloadTask(private val url: String) : Task<Unit>() {
     }
 
     private fun updateSpeed(value: String) {
-        Platform.runLater({ speed.set(value) })
+        Platform.runLater { speed.set(value) }
     }
 
     @Suppress("unused")
@@ -116,6 +132,14 @@ class DownloadTask(private val url: String) : Task<Unit>() {
     }
 
     private fun updateEta(value: String) {
-        Platform.runLater({ eta.set(value) })
+        Platform.runLater { eta.set(value) }
     }
+}
+
+private enum class DownloadState {
+    INITIALIZING,
+    DOWNLOADING_VIDEO,
+    DOWNLOADING_AUDIO,
+    MERGING_FORMATS,
+    COMPLETE
 }
