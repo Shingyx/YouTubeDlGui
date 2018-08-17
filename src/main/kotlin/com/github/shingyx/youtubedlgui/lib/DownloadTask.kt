@@ -1,12 +1,12 @@
 package com.github.shingyx.youtubedlgui.lib
 
 import javafx.application.Platform
+import javafx.beans.property.ReadOnlyStringProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.concurrent.Task
 import java.io.IOException
 import java.net.URL
 import java.net.URLDecoder
-import javafx.beans.property.ReadOnlyStringProperty
 
 class DownloadTask(private val url: String) : Task<Unit>() {
     private val processBuilder: ProcessBuilder
