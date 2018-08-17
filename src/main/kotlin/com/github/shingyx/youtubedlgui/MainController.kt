@@ -24,10 +24,10 @@ class MainController {
     private lateinit var container: VBox
     @FXML
     private lateinit var urlField: TextField
+    private lateinit var table: TableView<DownloadTask>
 
     private val tasks = ConcurrentHashMap<String, DownloadTask>()
-    private lateinit var table: TableView<DownloadTask>
-    private lateinit var executorService: ExecutorService
+    private val executorService: ExecutorService = Executors.newFixedThreadPool(8)
 
     init {
         try {
@@ -65,8 +65,6 @@ class MainController {
         etaColumn.setCellFactory { TableCellFormat() }
         table.columns.addAll(titleColumn, progressColumn, statusColumn, speedColumn, etaColumn)
         container.children.add(table)
-
-        executorService = Executors.newFixedThreadPool(8)
     }
 
     @FXML
