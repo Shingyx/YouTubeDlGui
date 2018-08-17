@@ -14,5 +14,15 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 
+deploy:
+  provider: releases
+  api_key:
+    secure: S8N0a28wlCRe29ZjvXicUCJvrDyDU2i/apiMGqYGUy6GhX3eUZzk8PZPYMFCqMdUu1EGAydxjCzlvVHiVsEPO4VsE0WXWH35Hipb1ErSk+bEerlbc99luy8g5jcqnIyS0K74Tme8Q2Zs5pcED++H2wtUWm0ypVIXKifFEqmSq6UA54LgwWZgDvBA5JL29bRxAKOYhqJExNzF/2qx71N5f/R1XKOmBAt65PXkvSwcMboasrSNkS9nyGAK7Z5LQ1dizmwdoohxzX6JzWvAb7xRdJffkHIWzkitVP/7nLYJz1oYAI2/f5rHG58s/VDqB6eK2b8RwbF/FB2dMkochCOLecmrepoJd4Trrxl2MOUlA/OxWune6RDQMmlFy/UO79qunN/AE2eaUr+/PknmczymhyInlD8uLTjKDuLHZ5DX+TeQTiRXG825d4xH3eozBFQRMDB0CItLxgqUJWWxrZnx2W5FCZtjS7ASX/JB91DpjpXVo/BNgQMdXXSXR0GnGW6Is0BpGkgVO+DP8w6lscVn6aMvhCu2ROvIIMtZLLoycDBJwKi2qLckMvl25DtT1adFmGqj6mP1kypEolBEG4r9k/G8qbLteLoJPRZTCk1Y4FWBgPXSA/N/2bOXEs+/ZvRJf1ZTL1Tacjxb82W1QLtTRco0PWmenuJckUynXQlqGco=
+  file: build/libs/youtubedlgui-all.jar
+  skip_cleanup: true
+  on:
+    repo: Shingyx/YouTubeDlGui
+    tags: true
+
 notifications:
   email: false
