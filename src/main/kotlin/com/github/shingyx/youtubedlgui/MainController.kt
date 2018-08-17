@@ -39,15 +39,6 @@ class MainController {
 
     @FXML
     private fun initialize() {
-        urlField.focusedProperty().addListener { _, _, focused ->
-            if (focused && urlField.text.isEmpty()) {
-                val clipboardText = Clipboard.getSystemClipboard().string?.trim()
-                if (isValidUrl(clipboardText)) {
-                    urlField.text = clipboardText
-                }
-            }
-        }
-
         table = TableView()
         table.columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY
 
@@ -87,6 +78,14 @@ class MainController {
         stage.initModality(Modality.APPLICATION_MODAL)
         loader.getController<ConfigController>().stage = stage
         stage.show()
+    }
+
+    @FXML
+    private fun pasteUrl() {
+        val clipboardText = Clipboard.getSystemClipboard().string
+        if (!clipboardText.isNullOrBlank()) {
+            urlField.text = clipboardText.trim()
+        }
     }
 
     @FXML

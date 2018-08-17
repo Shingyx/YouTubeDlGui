@@ -23,6 +23,7 @@
     <HBox alignment="CENTER" spacing="10.0">
         <Label text="Video URL:"/>
         <TextField fx:id="urlField" prefWidth="600.0" HBox.hgrow="ALWAYS"/>
+        <Button mnemonicParsing="false" onAction="#pasteUrl" text="Paste URL"/>
     </HBox>
     <Button defaultButton="true" mnemonicParsing="false" onAction="#startDownload" text="Start"/>
 </VBox>
