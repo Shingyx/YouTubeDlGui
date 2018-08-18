@@ -10,6 +10,7 @@ import java.net.URLDecoder
 
 class DownloadTask(private val url: String) : Task<Unit>() {
     private val processBuilder: ProcessBuilder
+    private var process: Process? = null
     private var videoId: String? = null
     private var downloadState = DownloadState.INITIALIZING
     private var completeMessage = "Complete"
@@ -38,14 +39,12 @@ class DownloadTask(private val url: String) : Task<Unit>() {
         updateTitle(url)
         updateMessage("Initializing")
 
-        val process = processBuilder.start()
-        process.inputStream.bufferedReader().forEachLine {
-            if (isCancelled) {
-                completeMessage = "Cancelled"
-                process.destroy()
-                return@forEachLine
-            }
+        process = processBuilder.start()
+        process!!.inputStream.bufferedReader().forEachLine {
             processLine(it.trim())
+        }
+        if (isCancelled) {
+            completeMessage = "Cancelled"
         }
 
         downloadState = DownloadState.COMPLETE
@@ -53,6 +52,12 @@ class DownloadTask(private val url: String) : Task<Unit>() {
         updateMessage(completeMessage)
         updateSpeed("-")
         updateEta("-")
+    }
+
+    override fun cancel(mayInterruptIfRunning: Boolean): Boolean {
+        return super.cancel(mayInterruptIfRunning).also {
+            process?.destroy()
+        }
     }
 
     private fun processLine(line: String) {

@@ -18,6 +18,8 @@ class MainApplication : Application() {
             Platform.exit()
         }
         primaryStage.show()
+        primaryStage.minWidth = primaryStage.width
+        primaryStage.minHeight = primaryStage.height
     }
 }
 

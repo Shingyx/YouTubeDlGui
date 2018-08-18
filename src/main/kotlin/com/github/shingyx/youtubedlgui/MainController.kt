@@ -39,6 +39,7 @@ class MainController {
         val loader = FXMLLoader(javaClass.getResource("/Config.fxml"))
         stage.scene = Scene(loader.load())
         stage.title = "Configure paths"
+        stage.isResizable = false
         stage.initModality(Modality.APPLICATION_MODAL)
         loader.getController<ConfigController>().stage = stage
         stage.show()
