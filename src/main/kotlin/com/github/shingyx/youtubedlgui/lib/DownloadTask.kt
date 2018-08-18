@@ -11,7 +11,7 @@ import java.net.URLDecoder
 class DownloadTask(private val url: String) : Task<Unit>() {
     private val processBuilder: ProcessBuilder
     private var videoId: String? = null
-    private var downloadState: DownloadState = DownloadState.INITIALIZING
+    private var downloadState = DownloadState.INITIALIZING
     private var completeMessage = "Complete"
 
     private val speed = SimpleStringProperty(this, "speed", "-")

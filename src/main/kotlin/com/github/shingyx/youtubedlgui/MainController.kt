@@ -4,30 +4,26 @@ import com.github.shingyx.youtubedlgui.lib.Config
 import com.github.shingyx.youtubedlgui.lib.DownloadTask
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
-import javafx.geometry.Pos
 import javafx.scene.Scene
-import javafx.scene.control.*
-import javafx.scene.control.cell.ProgressBarTableCell
-import javafx.scene.control.cell.PropertyValueFactory
+import javafx.scene.control.Alert
+import javafx.scene.control.TableView
+import javafx.scene.control.TextField
 import javafx.scene.input.Clipboard
-import javafx.scene.layout.VBox
 import javafx.stage.Modality
 import javafx.stage.Stage
 import org.apache.commons.httpclient.util.URIUtil
 import java.io.IOException
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 class MainController {
     @FXML
-    private lateinit var container: VBox
-    @FXML
     private lateinit var urlField: TextField
+    @FXML
     private lateinit var table: TableView<DownloadTask>
 
     private val tasks = ConcurrentHashMap<String, DownloadTask>()
-    private val executorService: ExecutorService = Executors.newFixedThreadPool(8)
+    private val executorService = Executors.newFixedThreadPool(8)
 
     init {
         try {
@@ -35,36 +31,6 @@ class MainController {
         } catch (e: IOException) {
             showError("Loading config failed")
         }
-    }
-
-    @FXML
-    private fun initialize() {
-        table = TableView()
-        table.columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY
-
-        class TableCellFormat : TableCell<DownloadTask, String>() {
-            override fun updateItem(item: String?, empty: Boolean) {
-                super.updateItem(item, empty)
-                text = item
-                alignment = Pos.CENTER_RIGHT
-            }
-        }
-
-        val titleColumn = TableColumn<DownloadTask, String>("Video")
-        titleColumn.cellValueFactory = PropertyValueFactory<DownloadTask, String>("title")
-        val progressColumn = TableColumn<DownloadTask, Double>("Progress")
-        progressColumn.cellValueFactory = PropertyValueFactory<DownloadTask, Double>("progress")
-        progressColumn.cellFactory = ProgressBarTableCell.forTableColumn()
-        val statusColumn = TableColumn<DownloadTask, String>("Status")
-        statusColumn.cellValueFactory = PropertyValueFactory<DownloadTask, String>("message")
-        val speedColumn = TableColumn<DownloadTask, String>("Speed")
-        speedColumn.cellValueFactory = PropertyValueFactory<DownloadTask, String>("speed")
-        speedColumn.setCellFactory { TableCellFormat() }
-        val etaColumn = TableColumn<DownloadTask, String>("ETA")
-        etaColumn.cellValueFactory = PropertyValueFactory<DownloadTask, String>("eta")
-        etaColumn.setCellFactory { TableCellFormat() }
-        table.columns.addAll(titleColumn, progressColumn, statusColumn, speedColumn, etaColumn)
-        container.children.add(table)
     }
 
     @FXML

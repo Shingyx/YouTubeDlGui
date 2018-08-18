@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.github.shingyx.youtubedlgui.ProgressBarTableCellFactory?>
+<?import com.github.shingyx.youtubedlgui.RightAlignTableCellFactory?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="container" alignment="CENTER" spacing="10.0" xmlns="http://javafx.com/javafx/8.0.121"
-      xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.shingyx.youtubedlgui.MainController">
+<VBox alignment="CENTER" spacing="10.0" xmlns:fx="http://javafx.com/fxml" fx:controller="com.github.shingyx.youtubedlgui.MainController">
     <padding>
-        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+        <Insets topRightBottomLeft="10.0"/>
     </padding>
     <HBox alignment="CENTER_RIGHT">
         <Button mnemonicParsing="false" onAction="#openConfiguration" text="Configure">
@@ -26,4 +25,45 @@
         <Button mnemonicParsing="false" onAction="#pasteUrl" text="Paste URL"/>
     </HBox>
     <Button defaultButton="true" mnemonicParsing="false" onAction="#startDownload" text="Start"/>
+    <TableView fx:id="table" VBox.vgrow="ALWAYS">
+        <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+        </columnResizePolicy>
+        <columns>
+            <TableColumn text="Video">
+                <cellValueFactory>
+                    <PropertyValueFactory property="title"/>
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn text="Progress">
+                <cellValueFactory>
+                    <PropertyValueFactory property="progress"/>
+                </cellValueFactory>
+                <cellFactory>
+                    <ProgressBarTableCellFactory/>
+                </cellFactory>
+            </TableColumn>
+            <TableColumn text="Status">
+                <cellValueFactory>
+                    <PropertyValueFactory property="message"/>
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn text="Speed">
+                <cellValueFactory>
+                    <PropertyValueFactory property="speed"/>
+                </cellValueFactory>
+                <cellFactory>
+                    <RightAlignTableCellFactory/>
+                </cellFactory>
+            </TableColumn>
+            <TableColumn text="ETA">
+                <cellValueFactory>
+                    <PropertyValueFactory property="eta"/>
+                </cellValueFactory>
+                <cellFactory>
+                    <RightAlignTableCellFactory/>
+                </cellFactory>
+            </TableColumn>
+        </columns>
+    </TableView>
 </VBox>
